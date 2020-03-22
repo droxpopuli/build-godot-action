@@ -1,4 +1,22 @@
+build-godot-action
+==================
+
 ![Release Version](https://img.shields.io/github/v/release/josephbmanley/build-godot-action) ![Test Action](https://github.com/josephbmanley/build-godot-action/workflows/Test%20Action/badge.svg)
+
+### Feature Branch: gut-support (testing and deployment)
+
+Features/Fixes:
+
+- [x] Testing Support via GUT (Godot Unit Test) addon
+- [x] Dockerfile for containerized local testing
+- [x] Example Workflow
+- [x] Reduced redundant export template downloads
+- [ ] GH Releases deployment
+- [ ] itch.io deployment 
+
+The following badge is a possible workflow for using this tool. (Note: As the Gut testing uses the master from Gut's repository, the test jobs may not all pass so the failing build status is normal.)
+
+![Example Usage](https://github.com/droxpopuli/build-godot-action/workflows/Example%20Usage/badge.svg?branch=gut-support)
 
 # Build Godot Project
 

@@ -1,40 +1,60 @@
 #!/bin/sh
 set -e
 
-# Install export templates
-wget https://downloads.tuxfamily.org/godotengine/3.2.1/Godot_v3.2.1-stable_export_templates.tpz --quiet
-mkdir ~/.cache
-mkdir -p ~/.config/godot
-mkdir -p ~/.local/share/godot/templates/3.2.1.stable
-unzip Godot_v3.2.1-stable_export_templates.tpz
-mv templates/* ~/.local/share/godot/templates/3.2.1.stable
-rm -f Godot_v3.2.1-stable_export_templates.tpz
+# Setup templates
+mkdir -p ${HOME}/.cache
+mkdir -p ${HOME}/.config/godot
+mkdir -p ${HOME}/.local/share/
+ln -s /opt/godot ${HOME}/.local/share/
 
-if [ "$3" != "" ]
-then
-    SubDirectoryLocation="$3/"
-fi
+# Alias args
+PROJECT_NAME=${1}
+PROJECT_DIR=${2}
+BUILD_PRESET=${3}
+BUILD_DIR= ${4}
+RUN_TESTS=${5}
+USE_LATEST=${6}
+DEBUG_MODE=${7}
 
+# Location of Build Directory.
+BUILD_DIR="~/build/${BUILD_DIR}"
+
+# Debug Export Flag
 mode="export"
-if [ "$6" = "true" ]
+if [ "${DEBUG_MODE}" = "true" ]
 then
     mode="export-debug"
 fi
 
-# Export for project
-echo "Building $1 for $2"
-mkdir -p ~/build/${SubDirectoryLocation:-""}
-cd ${5-"~"}
-godot --${mode} $2 ~/build/${SubDirectoryLocation:-""}$1
-cd ~
-
-echo ::set-output name=build::~/build/${SubDirectoryLocation:-""}
-
-
-if [ "$4" = "true" ]
+branch="stable"
+if [ "${USE_LATEST}" = "true" ]
 then
-    mkdir ~/package
-    cd ~/build
-    zip ~/package/artifact.zip ${SubDirectoryLocation:-"."} -r
-    echo ::set-output name=artifact::~/package/artifact.zip
+    branch="latest"
 fi
+
+is_latest="stable"
+if [ "${USE_LATEST}" != "" ]
+then
+    is_latest="latest"
+fi
+
+if [ "${PROJECT_DIR}" != "" ]
+then
+    cd ${PROJECT_DIR}
+fi
+
+if [ "${RUN_TESTS}" = "true" ]
+then
+    # Test
+    echo "Testing ${PROJECT_NAME} on ${is_latest}"
+    godot-${branch} -d -s --path $PWD addons/gut/gut_cmdln.gd
+else
+    # Export
+    echo "Building ${PROJECT_NAME} for ${BUILD_PRESET} on ${is_latest}"
+    mkdir -p ${BUILD_DIR}
+    echo "Running: godot-${branch} --${mode} ${BUILD_PRESET} ${BUILD_DIR}${PROJECT_NAME}-${BUILD_PRESET}"
+    godot-${branch} --${mode} ${BUILD_PRESET} ${BUILD_DIR}${PROJECT_NAME}-${BUILD_PRESET}
+    zip ${BUILD_DIR}${PROJECT_NAME}-${BUILD_PRESET}.zip ${BUILD_DIR} -r
+fi
+
+ls -al --color ${BUILD_DIR}

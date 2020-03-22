@@ -1,17 +1,44 @@
-name: Test Action
+name: Example Usage
 
 on: push
 
 jobs:
-  TestAction:
+  test-example:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        is-latest: ['true', 'false']
     steps:
-    - name: Checkout
-      uses: actions/checkout@v1
-    - name: Run Action
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
+    - name: Checkout GUT
+      uses: actions/checkout@v2
+      with:
+        repository: bitwes/Gut
+        path: unit_test_project
+    - name: Run Gut on Gut (latest branch? ${{ matrix.is-latest }})
       uses: ./
       with:
-        name: test_project
-        preset: linux
-        projectDir: test_project
-        package: 'true'
+        project-name: Gut
+        project-dir: unit_test_project
+        run-tests: true
+        use-latest: ${{ matrix.is-latest }}
+
+  build-example:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ['x11.64', 'x11.32', 'win32', 'win64', 'osx', 'web']
+        is-latest: ['true', 'false']
+    steps:
+    - name: Checkout This Repo
+      uses: actions/checkout@v2
+    - name: Build Test Project with Godot on ${{ matrix.target }} (latest branch? ${{ matrix.is-latest }})
+      uses: ./
+      with:
+        project-name: test_project
+        project-dir: test_project
+        build-preset: ${{ matrix.target }}
+        use-latest: ${{ matrix.is-latest }}
