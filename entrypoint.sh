@@ -55,6 +55,5 @@ else
     echo "Running: godot-${branch} --${mode} ${BUILD_PRESET} ${BUILD_DIR}${PROJECT_NAME}-${BUILD_PRESET}"
     godot-${branch} --${mode} ${BUILD_PRESET} ${BUILD_DIR}${PROJECT_NAME}-${BUILD_PRESET}
     zip ${BUILD_DIR}${PROJECT_NAME}-${BUILD_PRESET}.zip ${BUILD_DIR} -r
+    ls -al --color ${BUILD_DIR}
 fi
-
-ls -al --color ${BUILD_DIR}
