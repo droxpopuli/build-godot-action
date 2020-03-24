@@ -1,15 +1,12 @@
-FROM barichello/godot-ci:latest
+FROM droxpopuli/godot-ci:1.1
+# GODOT_STABLE inheret from base image
+# GODOT_LATEST inheret from base image
 
-LABEL "com.github.actions.name"="Build Godot"
-LABEL "com.github.actions.description"="Build a Godot project for multiple platforms"
-LABEL "com.github.actions.icon"="loader"
-LABEL "com.github.actions.color"="blue"
+# Install Entrypoint
+ADD entrypoint.sh /opt/godot-ci/entrypoint.sh
+RUN chmod +x /opt/godot-ci/entrypoint.sh
+ENV PATH="/opt/godot-ci:${PATH}"
 
-LABEL repository="https://github.com/josephbmanley/build-godot-action"
-LABEL homepage="https://cloudsumu.com/"
-LABEL maintainer="Joseph Manley <joseph@cloudsumu.com>"
+COPY . ./
+ENTRYPOINT ["entrypoint.sh"]
 
-USER root
-ADD entrypoint.sh /entrypoint.sh
-RUN chmod +x entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
