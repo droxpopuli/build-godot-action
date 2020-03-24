@@ -27,7 +27,7 @@ then
 fi
 
 branch="stable"
-if [ "${USE_LATEST}" = "true" ]
+if [ "${USE_LATEST}" == "true" ]
 then
     branch="latest"
 fi
@@ -43,7 +43,7 @@ then
     cd ${PROJECT_DIR}
 fi
 
-if [ "${RUN_TESTS}" = "true" ]
+if [ "${RUN_TESTS}" == "true" ]
 then
     # Test
     echo "Testing ${PROJECT_NAME} on ${is_latest}"
